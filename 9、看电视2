@@ -1,0 +1,36 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <math.h>
+struct node
+    {
+        int x;
+        int y;
+    }a[100];
+int cmp(const void*p,const void*q){
+    return (*(int*)q-*(int*)p);
+}
+int main()
+{
+    int n;
+    while (1)
+    {       
+        scanf("%d",&n);
+        if(n==0){
+            return 0;
+        }
+        int s=0;
+        for(int i=0;i<n;i++){
+            scanf("%d %d",&a[i].x,&a[i].y);
+        }
+       qsort(a,n,sizeof(a[0]),cmp);
+       s++;
+       int temp=a[0].x;
+       for(int i=0;i<n;i++){
+           if(a[i].y<=temp){
+               s++;
+               temp=a[i].x;
+           }          
+       }
+       printf("%d\n",s);
+    }  
+}
