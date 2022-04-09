@@ -1,0 +1,29 @@
+#include<stdio.h>
+int main()
+{
+	int n;
+	scanf("%d",&n);
+	int R[n];
+	for(int i=0;i<n;i++)
+	{
+		int x;
+		scanf("%d",&x);
+		R[i]=x;
+	}
+	int m;
+	scanf("%d",&m);
+	int j=0;
+	while(j<n)
+	{
+		if(R[j]==m)
+		{
+			printf("R[%d]=%d\n",j+1,m);
+			break;
+		}
+		j++;
+	}
+	if(j==n)
+	{
+		printf("R[-1]=%d",m);
+	}
+ }
