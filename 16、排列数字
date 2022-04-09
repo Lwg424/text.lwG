@@ -1,0 +1,27 @@
+#include<stdio.h> 
+int a[10];
+int p[10];
+int n;
+void Sort(int m)
+{
+	if(m == n)
+	{
+		for(int i = 0; i < n; i ++) {
+			printf("%d ",a[i]);
+		}
+		printf("\n");
+	}
+	for(int i = 0; i < n; i ++) {
+		if(!p[i]) {
+			a[m] = i+1;
+			p[i] = 1;
+			Sort(m + 1);
+			p[i] = 0;
+		}		
+	}
+}
+main()
+{
+	scanf("%d",&n);
+	Sort(0);
+}
