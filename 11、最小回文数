@@ -1,0 +1,35 @@
+#include<stdio.h>
+#define MAXSIZE 10000
+int main()
+{
+	int n,x,y;
+	int a[MAXSIZE];
+	for(int i=0;i<3;i++)
+	{
+	    scanf("%d",&n);
+	    if(n<=0||n>MAXSIZE)
+	    {
+        	return 0;
+    	}
+    	for(int j=n+1;j<MAXSIZE;j++)
+    	{
+	    	x=j;
+	    	y=0;
+	    	while(x!=0)
+	    	{
+	    		y=y*10+x%10;
+	    		x=x/10;
+	    	}
+	    	if(y==j)
+	    	{
+	    		a[i]=j;
+	    		break;
+	    	}
+    	}	
+	}
+//	printf("%d",a[0]);
+    for(int k=0;k<3;k++)
+	{
+		printf("%d\n",a[k]);
+	 } 
+}
