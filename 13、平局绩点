@@ -1,0 +1,36 @@
+#include<stdio.h>
+#include <string.h>
+main()
+{
+	char str[100];
+	while(gets(str))
+	{
+		int flag=1;
+		float sum=0;
+		int len = strlen(str);
+		for(int i=0;i<len;i=i+2)
+		{
+			if(str[i]=='A')
+			{
+				sum+=4.0;
+			}
+			else if(str[i]=='B')
+			{
+				sum+=3.0;
+			}
+			else if(str[i]=='C')
+			{
+				sum+=2.0;
+			}
+			else if(str[i]=='D')
+			{
+				sum+=1.0;
+			}
+			else if(str[i]!='F')
+			{
+				flag=0;
+			}
+		}
+		flag==0?printf("Unknown"):printf("%.2lf\n",sum/((len+1)/2));
+    }
+} 
