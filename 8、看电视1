@@ -1,0 +1,38 @@
+#include <stdio.h>
+#include <stdlib.h>
+typedef struct{
+	int x;
+	int y;
+} Inteval;
+// qsort 排序函数 
+int cmpInteval(const void *ca, const void *cb);
+int main(){
+	int n, ans, lastX, i;
+	while (scanf("%d", &n) != EOF){
+		ans = 1;
+		if (n == 0) continue; 
+		Inteval intevals[n];
+		for (i = 0; i < n; ++i)
+			scanf("%d %d", &intevals[i].x, &intevals[i].y);
+		qsort(intevals, n, sizeof(Inteval), cmpInteval);
+		// lastX 记录上一个有效区间的左端点 
+		lastX = intevals[0].x;
+		for (i = 1; i < n; ++i){
+			if(intevals[i].y <= lastX){
+				++ans;
+				lastX = intevals[i].x;
+			} 
+		} 
+		printf("%d\n", ans); 
+	}
+	return 0;
+}
+
+int cmpInteval(const void *ca, const void *cb){
+	Inteval a = *(Inteval*)ca;
+	Inteval b = *(Inteval*)cb;
+	if (a.x != b.x)
+		return b.x - a.x;	// 左端点大的在前面 
+	else
+		return a.y - b.y;	// 左端点相同的话，右端点小的在前面 
+}
