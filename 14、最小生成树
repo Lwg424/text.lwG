@@ -1,0 +1,48 @@
+#include<iostream>
+#include<algorithm>
+using namespace std;
+int p[100];
+struct Edge
+{
+    int u;
+    int v;
+    int w;
+    bool operator < (const Edge& c)const{
+        return w < c.w;
+    }
+}edge[100];
+int find(int x){
+    if (p[x]!=x){
+        p[x]=find(p[x]);
+    }
+    return p[x];
+}
+main()
+{
+    int n,m,a,x,y,w;
+    cin>>n>>m;
+    for (int i = 0 ; i < m; i++){
+        scanf("%d%d%d",&x,&y,&w);
+        edge[i]={x,y,w};
+    }
+    sort(edge,edge+m);
+    for (int i=1;i<=n;i++)
+	{
+    	p[i]=i;
+    } 
+    int res=0,cnt=0;
+    for (int i=0;i<m;i++){
+        int x=edge[i].u;
+        int y=edge[i].v;
+        int ww=edge[i].w;
+        int px=find(x);
+        int py=find(y);
+        if (px!=py){
+            cnt ++;
+            res+=ww;
+            p[px]=py;
+        }
+    }
+    if (cnt<n-1) puts("impossible");
+    else cout<<res<<endl;
+}
