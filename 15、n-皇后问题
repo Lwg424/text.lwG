@@ -1,0 +1,42 @@
+#include<stdio.h>
+#include<stdlib.h>
+int Judge(int a[],int i,int j) {
+	int k = 1;
+	while(k < i) {
+		if(a[k] == j || abs(k - i) == abs(a[k] - j)) {
+			return 0;
+		}
+		k++;
+	}
+	return 1;
+}
+void Printf(int a[],int n) {
+	for(int i = 1;i <= n; i++) {
+		for(int j = 1;j <= n; j++) {
+			if(a[i] != j) {
+				printf(".");
+			}else {
+				printf("Q");
+			}
+		}
+		printf("\n");
+	}
+	printf("\n");
+}
+void Queen(int a[],int m,int n) {
+	if(m>n) {
+		Printf(a,n);
+	} else {
+		for(int j = 1;j <= n; j++) {
+			if(Judge(a,m,j)) {
+				a[m] = j;
+				Queen(a,m+1,n);
+			}
+		}
+	}
+}
+main() {
+	int n,a[100];
+	scanf("%d",&n);
+	Queen(a,1,n);
+}
