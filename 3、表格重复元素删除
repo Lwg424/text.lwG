@@ -1,0 +1,72 @@
+ #include "stdio.h"  
+ #include "stdlib.h"   
+ typedef int elemType; 
+ typedef struct  
+ {  
+  elemType *elem;  
+  int length; 
+ } SqList;  
+
+ int InitList_Sq(SqList *L)  
+ {  
+  L->elem=new elemType[100];  
+  if(!L->elem)exit(-2);
+  L->length=0; 
+  return 1;  
+ }  
+ 
+ void TraverseList(SqList *L)  
+ {  
+  int i;  
+  for(i=0; i<L->length; i++)  
+  {  
+   printf("%d ",L->elem[i]);  
+  }  
+  printf("\n");  
+ }    
+ void InsertLast(SqList *L,elemType e)  
+ {  
+  
+  if(L->length >= 100)  
+   return;
+  L->elem[L->length]=e;  
+  L->length++;   
+ }  
+ void ListDelete(SqList *L,elemType i)
+ {
+  for(int j = i; j <= L->length-1; j++)
+   L->elem[j] = L->elem[j+1];
+  --(L->length);
+}
+ void DeleteElem(SqList *L)  
+ {  
+  
+  for(int i = 0 ;i < L->length ;i++)
+  {
+   for(int j = i+1 ;j <= L->length-1 ;j++)
+   {
+    if(L->elem[i] == L->elem[j])
+    {
+     ListDelete(L,j);
+     j--;
+    }
+  }
+  }
+ }  
+main()  
+ {  
+  SqList list1;  
+  InitList_Sq(&list1);  
+  int n;  
+  scanf("%d",&n);  
+  int i;  
+   elemType temp;  
+  for(i=0; i<n; i++)  
+  {  
+   scanf("%d",&temp);  
+   InsertLast(&list1,temp);  
+  } 
+  DeleteElem(&list1) ;
+  printf("%d\n",list1.length);
+  TraverseList(&list1);
+}
