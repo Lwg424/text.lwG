@@ -1,0 +1,40 @@
+#include<stdio.h>
+#include<algorithm>
+#define MAX 100
+int arr[MAX],ans[MAX];
+int n,m;     //n为石头数量,m为可移动数量；
+bool solve(int middle)    //middle代表最短距离中的最大值 
+{
+	int rockNum=0;    //记录移动石头数 
+	int st=1;   //最初的石头 
+	for(int i=2;i<=n;i++)   //i表示结尾的石头 
+	{
+		if(ans[i]-ans[st]<middle)   //如果相邻距离小于middle，则移动石头 
+			rockNum++;
+		else //否则就更新初始石头
+			st=i;
+	}
+	if(rockNum>m)  //如果移动的石头超过m，则枚举长度偏大了 
+		return false;
+	return true;   //枚举长度偏小了 
+}
+int main()
+{
+	while(scanf("%d%d",&n,&m)!=EOF)
+	{
+		for(int i=2;i<=n;i++)
+		{
+			scanf("%d",&arr[i]);   //arr数组代表相邻之间的距离 
+			ans[i]=arr[i]+ans[i-1];   //ans数组代表从1到i之间的距离 
+		}	
+		int low=0,high=1000*1000+5;   //下限为0，上线只要满足l+right大于河长就行 
+		while(high-low>1) 
+		{
+			int middle=(low+high)>>1; 
+			if(solve(middle))	low=middle;//由于移除m有很多个解，然而又并不是最优解的，所以我们把长度加一进行二分 
+			else	high=middle;  //更新上限 
+		} 
+		printf("%d\n",low);
+	}
+	return 0;
+}
