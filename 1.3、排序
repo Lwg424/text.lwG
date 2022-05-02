@@ -1,0 +1,159 @@
+// 选择排序 
+
+#include<stdio.h>
+main() {
+	int a[100],n,k;
+	scanf("%d",&n);
+	for(int i = 0;i < n; i++) {
+		scanf("%d ",&a[i]);
+	}
+	scanf("%d",&k);
+	int min;
+	for(int i = 0;i < n; i++) {
+		min = i;
+		for(int j = i + 1;j < n; j++) {  // 寻找最小的元素 
+			if(a[j] < a[min]) {
+				min = j;  // 保存最小元素的索引号 
+			}
+		}
+		int t = a[i];
+		a[i] = a[min];
+		a[min] = t;
+	}
+	for(int i = 0;i < n; i++) {
+		printf("%d ",a[i]);
+	}
+}
+
+--------------------------------------------------------------------------------------------
+// 冒泡排序 
+
+#include<stdio.h>
+main() {
+	int a[100],n,k;
+	scanf("%d",&n);
+	for(int i = 0;i < n; i++) {
+		scanf("%d ",&a[i]);
+	}
+	scanf("%d",&k);
+	for(int i = 0;i < n; i++) {
+		for(int j = i + 1;j < n; j++) {   
+			if(a[j] < a[i]) {   // 找出最小的元素往前面排 
+				int t = a[i];
+				a[i] = a[j];
+				a[j] = t;
+			}
+		}
+	}
+	for(int i = 0;i < n; i++) {
+		printf("%d ",a[i]);
+	}
+}
+
+---------------------------------------------------------------------------------------------
+
+// 黑盒划分-归并排序 
+
+#include<stdio.h>
+void merge(int a[], int b[], int l, int m, int h)  // 数组b作为缓存数组，将数组a中的数据按升序方式存在数组b中 
+{
+    int i = l;
+    int j = m + 1;
+    int k = l;
+    while (i <= m && j <= h)
+    {
+        if (a[i] < a[j])
+        {
+            b[k++] = a[i];
+            i++;
+        }
+        else
+        {
+            b[k++] = a[j];
+            j++;
+        }
+    }
+    while (i <= m)
+    {
+        b[k++] = a[i];
+        i++;
+    }
+    while (j <= h)
+    {
+        b[k++] = a[j];
+        j++;
+    }
+}
+void mergeSort(int a[], int b[], int l, int h)  // 递归，将数组a中的数据从中间层层划分 
+{
+    if (l < h)
+    {
+        int m = (l + h) / 2;
+        mergeSort(a, b, l, m);
+        mergeSort(a, b, m + 1, h);
+        merge(a, b, l, m, h);
+        for (int i = l; i <= h; i++)  // 把数组b里的数据再写回数组a中 
+        {
+            a[i] = b[i];
+        }
+    }
+}
+main() {
+	int a[100],b[100],n,k;
+	scanf("%d",&n);
+	for(int i = 0;i < n; i++) {
+		scanf("%d ",&a[i]);
+	}
+	scanf("%d",&k);
+    mergeSort(a, b, 0, n-1);
+    for(int i = 0;i < 7;i ++) {
+    	printf("%d ",a[i]);
+	} 
+}
+
+----------------------------------------------------------------------------------------------------
+
+// 白盒划分-快速排序 
+
+#include<stdio.h>
+int seperate(int a[],int i,int j) {   /* i表示数组a首元素的下标，
+                                         j表示数组a尾元素的下标 */ 
+	int t = a[i];       // 以第一个元素将数组a进行划分 
+	while(i < j) {   // 当i >= j时结束循环 
+		while(a[j] >= t && i < j) {  // 从后往前找第一个小于t的元素 
+			j--;
+		}
+		if(i < j) {     // 找到后，互换两个元素，并i+1 
+			a[i++] = a[j];
+		}
+		while(a[i] <= t && i < j) {  // 从前往后找第一个大于t的元素 
+			i++;
+		}
+		if(i < j) {
+			a[j--] = a[i];  // 找到后，互换两个元素，并i-1 
+		}
+	} 
+	a[i] = t;
+	return i; 
+}
+void sort(int a[],int i,int j) { 	/* i表示数组a首元素的下标，
+                                  j表示数组a尾元素的下标 */ 
+	int k;
+	if(i < j) {
+		k = seperate(a,i,j);   // 把数组a分为两部分 
+		sort(a,i,k-1);    // 对前半部分进行快速排序 
+		sort(a,k+1,j);    // 对后半部分进行快速排序 
+	}
+} 
+main() {
+	int a[100],b[100],n,k;
+	scanf("%d",&n);
+	for(int i = 0;i < n; i++) {
+		scanf("%d ",&a[i]);
+	}
+	scanf("%d",&k);
+	sort(a,0,n-1);
+	for(int i = 0;i < 7;i ++) {
+    	printf("%d ",a[i]);
+	} 
+} 
