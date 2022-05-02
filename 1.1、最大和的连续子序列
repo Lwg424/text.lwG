@@ -1,6 +1,6 @@
 // 暴力列举法（3层循环）
 //  时间复杂度 O(n^3) 
-
+-------------------------------------------------------------------------------
 #include<stdio.h>
 main()
 {
@@ -22,4 +22,115 @@ main()
 		}
 	}
 	printf("%d",max);
+}
+
+-----------------------------------------------------------------------------------
+
+// 优化列举法（2层循环）
+//  时间复杂度 O(n^2) 
+
+#include <stdio.h>
+main()
+{
+	int sum[100];     // 表示从数组a[0]~a[k]的和，其中k表示数组sum的下标，例：sum[2]表示 a[0]+a[1]+a[2]
+   	int a[7]={1,-5,8,3,-4,15,-8};
+    sum[0] = a[0];
+    for(int i = 1; i <= 6; i++)  // 用来初始化数组sum[] 
+	{
+        sum[i] =a[i] + sum[i - 1];
+    }
+    int max = a[0];    // 存放序列和将最大的值 
+    for(int i = 1; i <= 6; i++) 
+	{
+        for(int j = i; j <= 6; j++) 
+		{
+            int s = sum[j] - sum[i - 1];
+            if(s > max) 
+			{
+				max = s;
+			}
+        }
+    }
+    printf("%d", max);
+}
+
+---------------------------------------------------------------------------------------------------------------
+
+// 分治法（1层循环）
+//  时间复杂度 O(n) 
+
+#include <stdio.h>
+main()
+{
+	int a[7]={1,-5,8,3,-4,15,-8};
+    int max = a[1];    // 存放序列和将最大的值 
+    for(int i = 1; i <= 6; i++)
+	{
+        if(a[i - 1] > 0)   // 剔除连续序列相加的和小于0的 
+        {
+        	a[i] =a[i]+a[i - 1];
+		}
+        else
+		{
+			a[i] += 0;
+		}
+		// 每次if-else语句运行结束将连续序列相加的和最大值存放在a[i] 
+        if(a[i] > max)
+		{
+			max = a[i];
+		}
+    }
+    printf("%d", max);
+}
+
+-----------------------------------------------------------------------------------------------
+
+// 递归算法
+// 时间复杂度 O(n) 
+
+#include <stdio.h>
+int a[7]={1,-5,8,3,-4,15,-8};
+int solve(int left, int right)
+{
+    //序列长度为1时
+    if(left == right)
+        return a[left];
+    
+    //划分为两个规模更小的问题
+    int mid = (left+right)/2;
+    int lans = solve(left, mid);
+    int rans = solve(mid + 1, right);
+    
+    //横跨分割点的情况
+    int sum = 0, lmax = a[mid], rmax = a[mid + 1];
+    for(int i = mid; i >= left; i--)
+	{
+        sum += a[i];
+        if(sum > lmax)
+		{
+			lmax = sum;
+		}
+    }
+    sum = 0;
+    for(int i = mid + 1; i <= right; i++) {
+        sum += a[i];
+        if(sum > rmax)
+		{
+			rmax = sum;
+		}
+    }
+
+    //答案是三种情况的最大值
+    int ans = lmax + rmax;
+    if(lans > ans) ans = lans;
+    if(rans > ans) ans = rans;
+
+    return ans;
+}
+
+int main()
+{
+	int max = solve(1,7);
+    printf("%d", max);
+    return 0;
 }
