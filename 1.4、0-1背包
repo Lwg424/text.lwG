@@ -1,0 +1,148 @@
+// 0-1背包递归算法 
+
+#include<stdio.h>
+int Pack(int Number, int MinWeight,int w[100],int p[100]) {  // Number表示物品数目，MinWeight表示背包限重，w[]表示各物品重量，p[]表示对应物品价值 
+	int i;
+    if (Number==0 || MinWeight==0) {  //递归算法的边界条件 
+        return 0;
+    }
+    else {
+        for (i=Number; i>0; i--) {
+		    if (w[i]>MinWeight) {
+                return Pack(Number-1,MinWeight,w,p);
+            }
+            else {
+                int m1 = Pack(Number-1,MinWeight,w,p);
+                int m2 = p[i] + Pack(Number-1,MinWeight-w[i],w,p);
+                if (m1 > m2) {  // 找出符合条件的最大价值 
+                    return m1;
+                }
+                else {
+                    return m2;
+                }
+            }
+        }
+    }
+}
+main() {
+    int Number,MinWeight,w[100],p[100];
+    printf("请输入物品的数目和背包的限制重量：\n");
+	scanf("%d %d",&Number,&MinWeight);
+	printf("请依次输入物品的重量：");
+	for(int i = 0;i < Number; i++) {
+		scanf("%d",&w[i]);
+	}
+	printf("\n");
+	printf("请以此输入物品的价值：");
+	for(int i = 0;i < Number; i++) {
+		scanf("%d",&p[i]);
+	}
+    printf("%d",Pack(Number,MinWeight,w,p));
+}
+
+---------------------------------------------------------------------------------------------
+
+// 0-1背包递归算法+备忘录 
+
+#include<stdio.h>
+int x[100];  // 用来记录物品是否已经放入背包：0表示为放入，1表示已放入 
+int Pack(int Number, int MinWeight,int w[100],int p[100]) { // Number表示物品数目，MinWeight表示背包限重，w[]表示各物品重量，p[]表示对应物品价值 
+	int i;
+    if (Number==0 || MinWeight==0) { //递归算法的边界条件 
+        return 0;
+    }
+    else {
+        for (i=Number; i>0; i--) {
+		    if (w[i]>MinWeight) {
+		    	x[i] = 0;
+                return Pack(Number-1,MinWeight,w,p);
+            }
+            else {
+                int m1 = Pack(Number-1,MinWeight,w,p);
+                int m2 = p[i] + Pack(Number-1,MinWeight-w[i],w,p);
+                if (m1 > m2) {
+                	x[i] = 0;
+                    return m1;
+                }
+                else {
+                	x[i] = 1;
+                    return m2;
+                }
+            }
+        }
+    }
+}
+main() {
+    int Number,MinWeight,w[100],p[100];
+    printf("请输入物品的数目和背包的限制重量：\n");
+	scanf("%d %d",&Number,&MinWeight);
+	printf("请依次输入物品的重量：");
+	for(int i = 0;i < Number; i++) {
+		scanf("%d",&w[i]);
+	}
+	printf("\n");
+	printf("请以此输入物品的价值：");
+	for(int i = 0;i < Number; i++) {
+		scanf("%d",&p[i]);
+	}
+	for(int t=0;t<Number;t++) {  // 输出所有符合条件的物品总价值 
+		for(int y=0;y<MinWeight;y++) {
+			printf("%d\t",Pack(t,y,w,p));
+		}
+		printf("\n");
+	}
+	int Max = Pack(Number-1,MinWeight-1,w,p);
+	printf("选择的物品的序号是：");
+	for(int j = 0;j <Number; j++) {  // 输出最大物品价值的所选则的所有物品序号 
+		if(x[j] ==1) {
+			printf("%d ",j);
+		}
+	}
+	printf("\n");
+    printf("最大价值为：%d",Max);
+}
+
+----------------------------------------------------------------------------------------------------
+
+// 0-1背包动态规划 
+
+#include<stdio.h>
+void pack() {
+	int Number,Weight;  // 分别表示物品数目、背包限重
+	int w[100],p[100];  // 分别表示物品重量、物品价值
+	printf("请输入物品的数目和背包的限制重量：\n");
+	scanf("%d %d",&Number,&Weight);
+	printf("请依次输入物品的重量：");
+	for(int i = 0; i < Number; i++) {
+		scanf("%d",&w[i]);
+	}
+	printf("\n");
+	printf("请以此输入物品的价值：");
+	for(int i = 0; i < Number; i++) {
+		scanf("%d",&p[i]);
+	}
+	int x[100][100];   // 用来表示所有符合条件的物品总价值
+	for(int i=0; i<=Number; i++) { // 初始第一行数据
+		x[i][0]=0;
+	}
+	for(int j=0; j<=Weight; j++) {
+		x[0][j]=0;
+	}
+	for(int i=1; i<=Number; i++) {
+		for(int j=1; j<=Weight; j++) {
+			if(j<w[i]) {
+				x[i][j]=x[i-1][j];
+			} else {
+				if(x[i-1][j] > x[i-1][j-w[i]] + p[i]) {  // 选出最大的物品总价值二维数组的最后一个
+					x[i][j] = x[i-1][j];
+				} else {
+					x[i][j] = x[i-1][j-w[i]] + p[i];
+				}
+			}
+		}
+	}
+	printf("\n价值为：%d\n",x[Number][Weight]);  // 输出最大价值
+}
+main() {
+	pack();
+}
