@@ -1,0 +1,109 @@
+// 迪杰斯特拉算法
+#include<stdio.h> 
+#define INF 99999     // INF 用来表示正无穷 
+typedef struct
+{
+	int n,e;    // n表示顶点数，e表示边数 
+	int edges[100][100];   // 定义图的邻接矩阵 
+	int p;
+}MGraph;
+void GreatMGraph(MGraph *G)   // 零阶矩阵储存图 
+{
+	int g[100][100];
+	int i,j,k;   
+	printf("请输入顶点数和边数（输入格式为：顶点数，边数）：\n");
+	scanf("%d,%d",&(G->n),&(G->e));
+	for(i=0;i<G->n;i++)    // 初始化图的邻接矩阵 权值为-1，则表示两顶点无边 
+	{
+		for(j=0;j<G->n;j++)
+		{
+			G->edges[i][j] = INF;
+		}
+	 } 
+	 printf("请输入边的起始顶点和终止顶点及边的权值（输入格式为：i，j，p）：\n");
+	 for(k=0;k<G->e;k++) 
+	 {
+	 	scanf("%d,%d,%d",&i,&j,&(G->p));
+	 	G->edges[i][j]=G->p;
+	 	g[i][j] = G->p;
+	 }
+	printf("该图为：\n");
+	for(int x = 0;x < G->n;x++) {   // 遍历并输出该图的零阶矩阵 
+		for(int y = 0;y < G->n; y++) {
+			printf("%d\t",g[x][y]);
+		}
+		printf("\n");
+	} 
+}
+void dispath(int dist[],int path[],int s[],int n,int v)    // 最短路径的输出算法 
+{
+ 	int i,k;
+ 	for(i=1;i<n;i++)
+ 	{
+ 		if(s[i]==1)
+ 		{
+ 			k=i;
+ 			printf("v%d到v%d的最短路径为：",v,i);
+ 			while(k!=v)
+ 			{
+ 				printf("v%d <- ",k);
+ 				k=path[k];
+			}
+			printf("v%d 路径长度为：%d\n",v,dist[i]);
+		 }
+		 else
+		 {
+		 	printf("v%d<-v%d不存在路径\n",i,v);
+		 }
+	 }
+}
+void dijkstra(MGraph *G,int v)    // 利用Dijkstra算法求最短路径 ，MGraph *G指向图的零阶矩阵的指针，v 表示源点的序号 
+{
+	int dist[100],path[100];   // 数组dist[i]数组用于存放源点到顶点vi的最短路径长度，path[i]数组用来存放vi的前驱顶点 
+	int s[100];     // 数组s[i]只有两个值（0，1），用于标记作用，0 表示尚未找到源点到vi顶点的最短路径长度，1 表示已找到源点到vi顶点的最短路径长度 
+	int mindis;   // 初始值未INF，用于寻找dist[i]中最短的路径长度 
+	int i,j,k;
+	for(i=0;i<G->n;i++)  // 初始化数组dist[],path[] 
+	{
+		dist[i]=G->edges[v][i];
+		s[i]=0;
+		if(G->edges[v][i]<INF)
+		{
+			path[i]=v;
+		}
+		else
+		{
+			path[i]=-1;
+		}
+	}
+	s[v]=1;    // 表示v未源点，从v开始寻找到其他顶点的最短路径长度 
+	for(i=0;i<G->n;i++)
+	{
+	    	mindis=INF;
+	    	k=v;
+	    	for(j=0;j<G->n;j++)   // 找出源点到vj的最短路径dist[]的值 
+	    	{
+	    		if(s[j]==0&&dist[j]<mindis)
+	    		{
+	    			k=j;
+	    			mindis=dist[j];
+	    		}
+	    	}
+	    s[k]=1;    // 将找出的dist[k]最小的值的顶点对应的s[k]的值改为1，表示已找到源点到vi顶点的最短路径长度
+	    for(j=0;j<G->n;j++)   //  
+    	{
+    		if(s[j]==0&&G->edges[k][j]<INF&&dist[k]+G->edges[k][j]<dist[j])
+    		{
+    			dist[j]=dist[k]+G->edges[k][j];
+    			path[j]=k;
+    		}
+    	}
+    }
+	dispath(dist,path,s,G->n,v);  // 输出最短路径 
+} 
+main()
+{
+	MGraph G;
+	GreatMGraph(&G);
+	dijkstra(&G,0); 
+}
