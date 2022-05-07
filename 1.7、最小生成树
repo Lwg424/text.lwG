@@ -1,0 +1,145 @@
+// 克鲁斯卡尔算法
+#include<stdio.h>
+typedef struct {
+	int vex1;   // 表示边的前驱节点 
+	int vex2;   // 表示边的后继节点 
+	int weight;   // 表示边的权值 
+}KEdge;
+void createKEdge(KEdge E[],int n,int e) {    // 创建一个有向图并以零阶矩阵的方式存储该图 
+	int g[100][100];  // 定义零阶矩阵，用于存储该图 
+	for(int i = 0;i < n; i++) {   // 零阶矩阵的初始化 
+		for(int j = 0;j < n; j++) {
+			g[i][j] = 0;
+		}
+	}
+	printf("请输入边的前驱节点和后继节点及边的权值（输入格式为：i，j，p）：\n");
+	for(int i=0;i<e;i++) 
+	{
+		scanf("%d %d %d",&E[i].vex1,&E[i].vex2,&E[i].weight);    // 存入边的前驱节点和后继节点及边的权值
+		g[E[i].vex1][E[i].vex2] = E[i].weight;   // 为零阶矩阵赋值 
+	}
+	printf("该图为：\n");
+	for(int i = 0;i < n; i++) {    // 零阶矩阵 输出图 
+		for(int j = 0;j < n; j++) {
+			printf("%d\t",g[i][j]);
+		}
+		printf("\n");
+	}
+	for(int i = 0;i < e; i++) {   // 冒泡排序，按边的权值大小从小到大排列 
+		for(int j = i+1;j < e; j++) {
+			if(E[j].weight<E[i].weight) {
+				int t1,t2,t3;
+				t1 = E[i].vex1,t2 = E[i].vex2,t3 = E[i].weight;
+				E[i].vex1 = E[j].vex1,E[i].vex2 = E[j].vex2,E[i].weight = E[j].weight;
+				E[j].vex1 = t1,E[j].vex2 = t2,E[j].weight = t3;
+			}
+		}
+	}
+	printf("-----------\n");
+}
+void Kruskal(KEdge E[],int n,int e) {   // 克鲁斯卡尔算法，生成最小生成树 
+	int G[100][100];
+	for(int x = 0;x < n; x++) {
+		for(int y = 0;y < n; y++) {
+			G[x][y] = 0;
+		}
+	}
+	printf("最小生成树为：\n");
+	int i,j,m1,m2,sn1,sn2;
+	int vset[100];   // 辅助数组，用于记录顶点是否属于同一集合 
+	for(i = 0;i < n; i++) {   // 初始化辅助数组 
+		vset[i] = i;
+	}
+	j = 0;
+	for(j = 0;j < e; j++) {
+		m1 = E[j].vex1;
+		m2 = E[j].vex2;
+		sn1 = vset[m1];    // 为两个顶点的所属的集合编号 
+		sn2 = vset[m2];
+		if(sn1!=sn2) {
+			printf("(%d,%d):%d\n",m1,m2,E[j].weight);
+			G[m1][m2] = E[j].weight;
+			for(i = 0;i < n; i++) {   // 并查集，确定两个顶点是否属于同一个集合 
+				if(vset[i]==sn1)
+				{
+					vset[i] = sn2;    // 修改符合的顶点，并放入集合里 
+				}
+			}
+		}
+	}
+	printf("该图的最小生成树为：\n");
+	for(int x = 0;x < n; x++) {
+		for(int y = 0;y < n; y++) {
+			printf("%d\t",G[x][y]);
+		}
+		printf("\n");
+	}
+}
+main()
+{
+	KEdge E[100];
+	int n,e;   // n表示定点数，e表示边数 
+	printf("请输入图的顶点数和边数：\n");
+	scanf("%d %d",&n,&e);
+	createKEdge(E,n,e);
+	Kruskal(E,n,e);
+ } 
+ 
+ -----------------------------------------------------------------------------------------------------
+ 
+ // 普利姆算法
+ #include "AdjMatrixUndirGraph.h"
+template<class ElemType,class WeightType> struct CloseArcType
+{
+    WeightType lowweight;
+    int nearvertex;
+};
+template<class ElemType,class WeightType> void
+MinSpanTreePrim(const AdjMatrixUndirGraph<ElemType,WeightType> &g,int u0)
+{
+    WeightType min;
+    ElemType v1,v2;
+    int vexnum=g.GetVexNum();
+    CloseArcType<ElemType,WeightType> *closearc;
+    if(u0<0||u0>=vexnum)
+        throw Error("顶点u0不存在！");
+    int u,v,k;
+    closearc=new CloseArcType<ElemType,WeightType>[vexnum];
+    for(v=0; v<vexnum; v++)
+    {
+        //初始化辅助数组adjVex，并对顶点作标志，此时U={v0}
+        closearc[v].nearvertex=u0;
+        closearc[v].lowweight=g.GetWeight(u0,v);
+    }
+    closearc[u0].nearvertex=-1;
+    closearc[u0].lowweight=0;
+
+    for(k=1; k<vexnum; k++)
+    {
+        //选择生成树的其余net.GetVexNum()-1 个顶点
+        min=g.GetInfinity();
+        v=u0;//选择使得边<w,adjVex[w]>为连接V-U到U的具有最小权值的边
+        for(u=0; u<vexnum; u++)
+            if(closearc[u].lowweight!=0 && closearc[u].lowweight<min)//找到最小权值
+            {
+                v=u;
+                min=closearc[u].lowweight;
+            }
+
+        if(v!=u0)
+        {
+            g.GetElem(closearc[v].nearvertex,v1);
+            g.GetElem(v,v2);
+            cout<<"edge:( "<<v1<<" , "<<v2<<" ) weight:"<<min<<endl;
+            closearc[v].lowweight=0;//将w并入U
+            for(u=g.FirstAdjVex(v); u!=-1; u=g.NextAdjVex(v,u))
+                //新顶点并入U后重新选择最小边
+                if(closearc[u].lowweight!=0 && (g.GetWeight(v,u)<closearc[u].lowweight))
+                {
+                    closearc[u].lowweight=g.GetWeight(v,u);
+                    closearc[u].nearvertex=v;
+                }
+        }
+    }
+    delete [] closearc;
+}
